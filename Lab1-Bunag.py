@@ -31,7 +31,7 @@ members = {
     6: {"Name": "Factor, Francis C."},
 }
 
-# ----- Model for Validation -----
+
 class Item(BaseModel):
     Name: str
     Price: str
