@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
@@ -22,7 +22,6 @@ class UpdateInventoryItem(BaseModel):
     category: Optional[str] = None
 
 
-# Enhanced inventory database
 inventory_db = [
     {"id": 1, "name": "Intel i5 11th Gen", "description": "Intel i5 11th Gen is a processor that is used in laptops and desktops.", "price": 10000.00, "quantity": 5, "category": "Processors"},
     {"id": 2, "name": "AMD Ryzen 5 5600G", "description": "AMD Ryzen 5 5600G is a processor that is used in laptops and desktops.", "price": 10000.00, "quantity": 8, "category": "Processors"},
@@ -31,19 +30,18 @@ inventory_db = [
     {"id": 5, "name": "Samsung 1TB SSD", "description": "Fast NVMe SSD for improved system performance", "price": 5000.00, "quantity": 12, "category": "Storage"}
 ]
 
-# Team Members - Updated List
 team_members = [
-    {"name": "Destine April D. Fortaliza", "role": "Developer", "student_id": "BSIT-4A"},
-    {"name": "Percy S. Bunag", "role": "Developer", "student_id": "BSIT-4A"},
-    {"name": "Francis C. Factor", "role": "Developer", "student_id": "BSIT-4A"},
-    {"name": "John Mark C. Cruz", "role": "Developer", "student_id": "BSIT-4A"},
-    {"name": "Adriane Aguilon", "role": "Developer", "student_id": "BSIT-4A"},
-    {"name": "John Michael Irenea", "role": "Developer", "student_id": "BSIT-4A"}
+    "Adriane Aguilon",
+    "Destine April D. Fortaliza",
+    "Francis C. Factor",
+    "John Mark C. Dela Cruz",
+    "John Michael Irenea",
+    "Percy S. Bunag"
 ]
 
 
 
-# New Activity 2 endpoints
+# HOME
 @app.get("/Home/")
 async def home():
     return {
@@ -53,6 +51,7 @@ async def home():
         "version": "2.0"
     }
 
+# INVENTORY (overview)
 @app.get("/inventory")
 async def get_static_inventory():
     return {
@@ -62,6 +61,7 @@ async def get_static_inventory():
         "sample_items": inventory_db[:3]
     }
 
+# INVENTORY (get all)
 @app.get("/get_inventory/")
 async def get_all_inventory():
     return {
@@ -70,24 +70,24 @@ async def get_all_inventory():
         "items": inventory_db
     }
 
+# INVENTORY (get by id)
 @app.get("/get_inventory/{item_id}")
 async def get_inventory_item(item_id: int):
     for item in inventory_db:
         if item["id"] == item_id:
             return {"status": "success", "item": item}
-    raise HTTPException(status_code=404, detail="Item not found")
+    return Response(status_code=404)
 
+# INVENTORY (create item)
 @app.post("/create_inventory/")
 async def create_inventory_item(item: CreateInventoryItem):
-    # Check if ID already exists
     for existing_item in inventory_db:
         if existing_item["id"] == item.id:
-            raise HTTPException(status_code=400, detail="Item with this ID already exists")
+            return Response(status_code=400)
     
-    # Check if name already exists
     for existing_item in inventory_db:
         if existing_item["name"].lower() == item.name.lower():
-            raise HTTPException(status_code=400, detail="Item with this name already exists")
+            return Response(status_code=400)
     
     new_item = {
         "id": item.id,
@@ -105,6 +105,7 @@ async def create_inventory_item(item: CreateInventoryItem):
         "item": new_item
     }
 
+# INVENTORY (update item)
 @app.put("/update_inventory/{item_id}")
 async def update_inventory_item(item_id: int, item_update: UpdateInventoryItem):
     item_index = None
@@ -114,12 +115,12 @@ async def update_inventory_item(item_id: int, item_update: UpdateInventoryItem):
             break
     
     if item_index is None:
-        raise HTTPException(status_code=404, detail="Item not found")
+        return Response(status_code=404)
     
     if item_update.name is not None:
         for existing_item in inventory_db:
             if existing_item["id"] != item_id and existing_item["name"].lower() == item_update.name.lower():
-                raise HTTPException(status_code=400, detail="Item with this name already exists")
+                return Response(status_code=400)
     
     current_item = inventory_db[item_index]
     
@@ -139,6 +140,21 @@ async def update_inventory_item(item_id: int, item_update: UpdateInventoryItem):
         "message": "Item updated successfully",
         "item": current_item
     }
+
+# INVENTORY (delete item)
+@app.delete("/items/{item_id}")
+async def delete_inventory_item(item_id: int):
+    item_index = None
+    for i, item in enumerate(inventory_db):
+        if item["id"] == item_id:
+            item_index = i
+            break
+    
+    if item_index is None:
+        return Response(status_code=404)
+    
+    inventory_db.pop(item_index)
+    return Response(status_code=204)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
