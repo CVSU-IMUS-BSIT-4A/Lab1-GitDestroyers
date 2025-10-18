@@ -1,18 +1,18 @@
 # Lab1 - ITEC111 - GitDestroyers
 
-## 📋 Project Overview
+## Project Overview
 **Subject:** ITEC 111  
 **Group:** GitDestroyers  
 **Repository:** [Lab1-GitDestroyers](https://github.com/CVSU-IMUS-BSIT-4A/Lab1-GitDestroyers)  
 **Main Branch:** Fortaliza  
 
 ## 👥 Team Members
-- **Destine April D. Fortaliza** - Developer (BSIT-4A)
-- **Percy S. Bunag** - Developer (BSIT-4A)  
-- **Francis C. Factor** - Developer (BSIT-4A)
-- **John Mark C. Cruz** - Developer (BSIT-4A)
-- **Adriane Aguilon** - Developer (BSIT-4A)
-- **John Michael Irenea** - Developer (BSIT-4A)
+- **Adriane Aguilon**
+- **Destine April D. Fortaliza**
+- **Francis C. Factor**
+- **John Mark C. Dela Cruz**
+- **John Michael Irenea**
+- **Percy S. Bunag**
 
 ## 🚀 FastAPI Inventory Management System
 
@@ -29,7 +29,6 @@ A comprehensive REST API built with FastAPI for managing computer hardware inven
 - Parameterized endpoint with error handling
 - GitHub repository setup with feature branches
 
-**Output:** 40 | Logic: 30 | Structure: 30
 
 ---
 
@@ -110,7 +109,6 @@ A comprehensive REST API built with FastAPI for managing computer hardware inven
 | DELETE | `/items/{item_id}` | Delete item | 204, 404 |
 
 
-## 🚀 Getting Started
 
 ### Prerequisites
 ```bash
