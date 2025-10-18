@@ -3,8 +3,7 @@
 ## Project Overview
 **Subject:** ITEC 111  
 **Group:** GitDestroyers  
-**Repository:** [Lab1-GitDestroyers](https://github.com/CVSU-IMUS-BSIT-4A/Lab1-GitDestroyers)  
-**Main Branch:** Fortaliza  
+**Repository:** [Lab1-GitDestroyers](https://github.com/CVSU-IMUS-BSIT-4A/Lab1-GitDestroyers)   
 
 ## 👥 Team Members
 - **Adriane Aguilon**
