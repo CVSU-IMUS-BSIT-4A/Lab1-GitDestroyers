@@ -1,7 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI(
+    title="Inventory API",
+    description="Simple inventory with CRUD and proper HTTP semantics.",
+    version="1.0.0",
+)
 
 # ----- Data Storage -----
 inventory = {
@@ -31,7 +35,7 @@ members = {
     6: {"Name": "Factor, Francis C."},
 }
 
-# ----- Model for Validation -----
+
 class Item(BaseModel):
     Name: str
     Price: str
@@ -40,13 +44,13 @@ class Item(BaseModel):
 
 # ----- Routes -----
 
-@app.get("/")
+@app.get("/", tags=["Meta"])
 def root():
     return {"message": "Hello World"}
 
 
 # ---- Team Members ----
-@app.get("/Home")
+@app.get("/Home/", tags=["Meta"])
 def get_member():
     return {"Team Members": members}
 
@@ -54,13 +58,13 @@ def get_member():
 # ---- Inventory ----
 
 # Static Introductory Endpoint
-@app.get("/inventory")
+@app.get("/inventory", tags=["Inventory"])
 def get_inventory():
     return {"Inventory": inventory}
 
 
 # Get Item by ID
-@app.get("/get_inventory/{item_id}")
+@app.get("/get_inventory/{item_id}", tags=["Inventory"])
 def get_item(item_id: int):
     if item_id not in inventory:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -68,7 +72,7 @@ def get_item(item_id: int):
 
 
 # Create New Item
-@app.post("/create_inventory/", status_code=201)
+@app.post("/create_inventory/", status_code=201, tags=["Inventory"])
 def create_item(item_id: int, item: Item):
     if item_id in inventory:
         raise HTTPException(status_code=400, detail="Item already exists")
@@ -77,9 +81,17 @@ def create_item(item_id: int, item: Item):
 
 
 # Update Existing Item
-@app.put("/update_inventory/{item_id}")
+@app.put("/update_inventory/{item_id}", tags=["Inventory"])
 def update_item(item_id: int, item: Item):
     if item_id not in inventory:
         raise HTTPException(status_code=404, detail="Item not found")
     inventory[item_id] = item.dict()
     return {"message": "Item updated successfully", "item": inventory[item_id]}
+
+@app.delete("/items/{item_id}", tags=["Inventory"])
+def delete_item(item_id: int):
+    if item_id not in inventory:
+        raise HTTPException(status_code=404, detail="Item not found")
+    del inventory[item_id]
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
